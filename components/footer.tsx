@@ -2,40 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Instagram, Facebook, Twitter } from "lucide-react";
 
-const FOOTER_COLUMNS = [
-  {
-    title: "Planning Tools",
-    links: [
-      { label: "Wedding Checklist", href: "/tools/checklist" },
-      { label: "Budget Manager", href: "/tools/budget" },
-      { label: "Guest List Tracker", href: "/tools/guestlist" },
-      { label: "Vendor Directory", href: "/vendors" },
-      { label: "Wedding Websites", href: "/websites" },
-    ],
-  },
-  {
-    title: "Inspiration",
-    links: [
-      { label: "Real Weddings", href: "/real-weddings" },
-      { label: "Wedding Ideas & Trends", href: "/inspiration" },
-      { label: "Photo Gallery", href: "/gallery" },
-      { label: "Bridal Fashion", href: "/fashion" },
-      { label: "Wedding Registry", href: "/registry" },
-    ],
-  },
-  {
-    title: "Services",
-    links: [
-      { label: "For Vendors", href: "/pro" },
-      { label: "Advertise with Us", href: "/advertise" },
-      { label: "Wedding Concierge", href: "/concierge" },
-      { label: "Gift Registry", href: "/registry" },
-      { label: "Shaadi Gold Membership", href: "/gold" },
-    ],
-  },
-];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -56,44 +23,59 @@ export default function Footer() {
             <p className="text-sm text-secondary/80 leading-relaxed font-sans max-w-sm">
               Crafting extraordinary wedding stories. From elite venues to master designers, we connect you with everything required to turn your dream wedding into a breathtaking reality.
             </p>
-            <div className="flex gap-4">
-              {[
-                { icon: Instagram, href: "#", label: "Instagram" },
-                { icon: Facebook, href: "#", label: "Facebook" },
-                { icon: Twitter, href: "#", label: "Twitter" },
-              ].map((social, idx) => (
-                <a
-                  key={idx}
-                  href={social.href}
-                  className="p-2 border border-accent/30 rounded-full text-secondary hover:text-accent hover:border-accent transition-all duration-300 hover:scale-105"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
           </div>
 
-          {/* Links Columns */}
-          {FOOTER_COLUMNS.map((column) => (
-            <div key={column.title} className="space-y-4">
-              <h3 className="font-serif text-base font-semibold text-accent tracking-wider uppercase">
-                {column.title}
-              </h3>
-              <ul className="space-y-2.5">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-secondary/80 hover:text-accent transition-colors font-medium"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {/* EXPLORE Column */}
+          <div className="space-y-4">
+            <h3 className="font-serif text-base font-semibold text-accent tracking-wider uppercase">
+              EXPLORE
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { label: "Home", href: "/" },
+                { label: "Gallery", href: "https://shaadiplatform.com/gallery/" },
+                { label: "Services", href: "https://shaadiplatform.com/wedding-planning-services/" },
+                { label: "About", href: "https://shaadiplatform.com/about/" },
+                { label: "Contact", href: "https://shaadiplatform.com/contact/" },
+              ].map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-secondary/80 hover:text-accent transition-colors font-medium"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact & Location Column */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Socials */}
+            <div className="flex gap-6">
+              <a href="https://www.instagram.com/shaadi_platform/" target="_blank" rel="noopener noreferrer" className="font-serif text-lg font-semibold text-secondary hover:text-accent transition-colors">Instagram</a>
+              <a href="https://www.facebook.com/profile.php?id=61572586872192" target="_blank" rel="noopener noreferrer" className="font-serif text-lg font-semibold text-secondary hover:text-accent transition-colors">Facebook</a>
+              <a href="https://www.linkedin.com/company/shaadiplatform/" target="_blank" rel="noopener noreferrer" className="font-serif text-lg font-semibold text-secondary hover:text-accent transition-colors">Linkedin</a>
             </div>
-          ))}
+
+            {/* Contact Details */}
+            <div className="space-y-2">
+              <a href="mailto:Info@shaadiplatform.com" className="block text-sm text-secondary/80 hover:text-accent transition-colors">Info@shaadiplatform.com</a>
+              <a href="tel:+919990837771" className="block text-sm text-secondary/80 hover:text-accent transition-colors">+91-99908 37771</a>
+              <a href="tel:+919990863337" className="block text-sm text-secondary/80 hover:text-accent transition-colors">+91-99908 63337</a>
+            </div>
+
+            {/* Location */}
+            <div className="space-y-2">
+              <h3 className="font-serif text-lg font-semibold text-accent tracking-wider">
+                Location
+              </h3>
+              <p className="text-sm text-secondary/80 leading-relaxed max-w-sm">
+                M 257, 3rd Floor, Guru Harkrishan Nagar, New Delhi, Delhi 110087, India
+              </p>
+            </div>
+          </div>
         </div>
 
 
