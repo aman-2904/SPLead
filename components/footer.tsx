@@ -81,18 +81,8 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 text-xs text-secondary/60">
-          <p>© {currentYear} ShaadiPlatform.com. All rights reserved.</p>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="hover:text-accent transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="hover:text-accent transition-colors">
-              Terms & Conditions
-            </Link>
-            <Link href="/cookies" className="hover:text-accent transition-colors">
-              Cookie Settings
-            </Link>
-          </div>
+          <p>© {currentYear} ShaadiPlatform. All rights reserved.</p>
+
         </div>
       </div>
     </footer>
