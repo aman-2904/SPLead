@@ -34,7 +34,7 @@ pnpm-debug.log*
 next-env.d.ts
 
 # Vercel
-.vercel
+
 
 # Supabase local dev
 .supabase/
