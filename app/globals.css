@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #601221;
+  --color-primary-dark: #6C142E;
+  --color-primary-light: #AC2852;
+
+  --color-secondary: #FDF6EA;
+  --color-secondary-dark: #F5EAD4;
+  --color-secondary-light: #FFFDF9;
+
+  --color-accent: #C8A45D;
+  --color-accent-dark: #B6924B;
+  --color-accent-light: #D9BB7B;
+
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+
+  --animate-fade-in-up: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Custom Base Layer styling */
+@utility elegant-glow {
+  box-shadow: 0 0 40px rgba(200, 164, 93, 0.15);
+}
+
+@utility glass-panel {
+  background: rgba(253, 246, 234, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 164, 93, 0.15);
+}
+
+@utility glass-panel-dark {
+  background: rgba(140, 29, 64, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 164, 93, 0.2);
+}
+
+@utility gold-border-gradient {
+  border-image: linear-gradient(to right, #C8A45D, #FDF6EA, #C8A45D) 1;
+}
+
+/* Smooth Scrolling & Typography default config */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-secondary);
+  color: #2D1A1E;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+  color: #1A050B;
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-dark);
+}
+
+/* Selection highlight */
+::selection {
+  background: var(--color-primary);
+  color: var(--color-secondary);
+}
