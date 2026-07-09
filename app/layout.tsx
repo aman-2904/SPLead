@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Providers from "./providers";
 import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: {
@@ -85,7 +84,6 @@ export default function RootLayout({
           <main className="flex-grow pt-20">
             {children}
           </main>
-          <Footer />
         </Providers>
       </body>
     </html>
