@@ -17,6 +17,7 @@ export interface DayRoomCount {
 }
 
 export interface WizardFormData {
+  requestId?: string;
   name: string;
   email: string;
   phone: string;
@@ -44,6 +45,7 @@ export interface WizardFormData {
 
 // Default Data Values
 const DEFAULT_FORM_DATA: WizardFormData = {
+  requestId: "",
   name: "",
   email: "",
   phone: "",

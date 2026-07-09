@@ -377,16 +377,23 @@ export default function AdminDashboard() {
                       requests.map((r) => (
                         <tr key={r.id} className="border-b border-accent/10 dark:border-neutral-850">
                           <td className="p-4 text-left">
-                            <div className="font-serif font-bold text-sm text-primary dark:text-neutral-200">{r.name}</div>
+                            <div className="font-serif font-bold text-sm text-primary dark:text-neutral-200 flex items-center gap-2">
+                              <span>{r.name}</span>
+                              {!r.budget && (
+                                <span className="bg-primary/10 text-primary dark:text-primary-light text-[8px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
+                                  Incomplete
+                                </span>
+                              )}
+                            </div>
                             <div className="text-[9px] text-accent font-medium mt-0.5">{r.phone}</div>
                           </td>
                           <td className="p-4 font-medium">
                             {r.city === "other" ? r.custom_city : r.city}
                           </td>
                           <td className="p-4">
-                            {r.is_flexible_date ? "Flexible" : `${r.wedding_month || ""} ${r.wedding_day ? `Day ${r.wedding_day}` : ""}`}
+                            {r.is_flexible_date ? "Flexible" : (r.wedding_month ? `${r.wedding_month}${r.wedding_day ? ` Day ${r.wedding_day}` : ""}` : "Not Selected Yet")}
                           </td>
-                          <td className="p-4 font-serif font-bold text-accent">{r.budget}</td>
+                          <td className="p-4 font-serif font-bold text-accent">{r.budget || "Incomplete"}</td>
                           <td className="p-4 text-center">
                             <button
                               onClick={() => setSelectedRequest(r)}
@@ -523,7 +530,14 @@ export default function AdminDashboard() {
               {/* Header */}
               <div className="flex justify-between items-center border-b border-accent/15 pb-4">
                 <div>
-                  <span className="text-[9px] font-bold text-accent uppercase tracking-widest block">Lead Details Inspect</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-bold text-accent uppercase tracking-widest block">Lead Details Inspect</span>
+                    {!selectedRequest.budget && (
+                      <span className="bg-primary/10 text-primary dark:text-primary-light text-[8px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
+                        Incomplete / In Progress
+                      </span>
+                    )}
+                  </div>
                   <h3 className="font-serif text-lg font-bold">{selectedRequest.name}</h3>
                 </div>
                 <button
@@ -557,14 +571,20 @@ export default function AdminDashboard() {
                   <div className="p-4 border border-accent/10 rounded-xl space-y-1">
                     <span className="text-[8px] font-bold text-accent uppercase block">Timeline / Date</span>
                     <p className="text-xs font-bold">
-                      {selectedRequest.is_flexible_date ? "Flexible Timeline" : `${selectedRequest.wedding_month || ""} (Day ${selectedRequest.wedding_day || "Flexible"})`}
+                      {selectedRequest.is_flexible_date 
+                        ? "Flexible Timeline" 
+                        : (selectedRequest.wedding_month 
+                          ? `${selectedRequest.wedding_month} ${selectedRequest.wedding_day ? `(Day ${selectedRequest.wedding_day})` : "(Flexible Day)"}` 
+                          : "Not Selected Yet")}
                     </p>
-                    <span className="text-[8px] text-primary/50 block">Duration: {selectedRequest.is_flexible_duration ? "Flexible" : selectedRequest.duration}</span>
+                    <span className="text-[8px] text-primary/50 block">
+                      Duration: {selectedRequest.is_flexible_duration ? "Flexible" : (selectedRequest.duration || "Not Selected Yet")}
+                    </span>
                   </div>
 
                   <div className="p-4 border border-accent/10 rounded-xl space-y-1">
                     <span className="text-[8px] font-bold text-accent uppercase block">Target Budget Tier</span>
-                    <p className="text-xs font-bold text-primary font-serif">{selectedRequest.budget}</p>
+                    <p className="text-xs font-bold text-primary font-serif">{selectedRequest.budget || "Incomplete"}</p>
                     <span className="text-[8px] text-primary/50 block">Food: {selectedRequest.is_vegetarian_only ? "Pure Vegetarian Only" : "Standard Menu"}</span>
                   </div>
                 </div>

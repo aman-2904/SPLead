@@ -52,7 +52,7 @@ function WizardForm() {
   const [stepError, setStepError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setStepError(null);
     setDirection(1);
     const success = nextStep();
@@ -63,6 +63,18 @@ function WizardForm() {
       } else {
         setStepError("Validation failed. Please verify inputs.");
       }
+      return;
+    }
+
+    // Auto-save partial progress after step validation succeeds
+    try {
+      const { savePartialOnboarding } = await import("@/features/wizard/actions");
+      const result = await savePartialOnboarding(formData, formData.requestId || null);
+      if (result.success && result.requestId) {
+        setStepData("requestId", result.requestId);
+      }
+    } catch (err) {
+      console.error("Failed to auto-save partial progress:", err);
     }
   };
 
@@ -82,8 +94,8 @@ function WizardForm() {
 
     try {
       setIsSubmitting(true);
-      const { submitOnboarding } = await import("@/features/wizard/actions");
-      const result = await submitOnboarding(formData);
+      const { savePartialOnboarding } = await import("@/features/wizard/actions");
+      const result = await savePartialOnboarding(formData, formData.requestId || null);
 
       if (result.success) {
         resetWizard();
@@ -145,7 +157,7 @@ function WizardForm() {
 
       {/* Step Form Body */}
       <div className="p-6 md:p-10 min-h-[420px] flex flex-col justify-between">
-        <div className="overflow-hidden relative flex-grow">
+        <div className="overflow-hidden relative flex-grow -m-2 p-2">
           <AnimatePresence initial={false} mode="wait" custom={direction}>
             <motion.div
               key={currentStep}

@@ -96,3 +96,69 @@ export async function submitOnboarding(input: OnboardingInput) {
     };
   }
 }
+
+/**
+ * Server Action to save or update onboarding progress.
+ */
+export async function savePartialOnboarding(input: any, requestId?: string | null) {
+  try {
+    // Basic validation for initial insert
+    if (!requestId) {
+      if (!input.name || input.name.trim().length < 2) {
+        return { success: false, error: "Name is required" };
+      }
+      if (!input.phone || input.phone.trim().length < 8) {
+        return { success: false, error: "Phone number is required" };
+      }
+      if (!input.city) {
+        return { success: false, error: "Wedding city is required" };
+      }
+    }
+
+    const data: any = {
+      name: input.name,
+      email: input.email || null,
+      phone: input.phone,
+      city: input.city,
+      custom_city: input.customCity || null,
+      wedding_month: input.weddingMonth || null,
+      wedding_day: input.weddingDay || null,
+      is_flexible_date: input.isFlexibleDate ?? false,
+      duration: input.duration || null,
+      is_flexible_duration: input.isFlexibleDuration ?? false,
+      budget: input.budget || null,
+      is_vegetarian_only: input.isVegetarianOnly ?? false,
+      services: input.services || [],
+      guest_counts: input.guestCountDetails || [],
+      rooms: input.roomsCountDetails || [],
+      venue_areas: input.venueAreas || [],
+      venue_types: input.venueTypes || [],
+    };
+
+    if (requestId) {
+      const { error } = await supabase
+        .from("planning_requests")
+        .update(data)
+        .eq("id", requestId);
+
+      if (error) throw error;
+      return { success: true, requestId };
+    } else {
+      const { data: request, error } = await supabase
+        .from("planning_requests")
+        .insert(data)
+        .select("id")
+        .single();
+
+      if (error) throw error;
+      return { success: true, requestId: request.id };
+    }
+  } catch (error: any) {
+    console.error("Supabase partial storage error:", error);
+    return {
+      success: false,
+      error: error.message || "An unexpected database error occurred.",
+    };
+  }
+}
+
