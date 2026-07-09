@@ -37,8 +37,79 @@ export function Step2Timeline({ formData, setStepData, errors }: Step2Props) {
     return new Date(yr || 2026, mn || 1, 0).getDate();
   };
 
+  const getFirstDayOfMonth = (monthVal: string) => {
+    if (!monthVal) return 0;
+    const [yr, mn] = monthVal.split("-").map(Number);
+    return new Date(yr, mn - 1, 1).getDay(); // 0 (Sun) to 6 (Sat)
+  };
+
   const daysCount = formData.weddingMonth ? getDaysInMonth(formData.weddingMonth) : 31;
   const daysArray = Array.from({ length: daysCount }, (_, i) => String(i + 1));
+  const firstDayIndex = formData.weddingMonth ? getFirstDayOfMonth(formData.weddingMonth) : 0;
+
+  const renderDurationSection = (isSideLayout: boolean) => {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between border-b border-accent/10 pb-2">
+          <label className="block text-[10px] font-bold text-primary tracking-wider uppercase">
+            2. Wedding Duration <span className="text-primary">*</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-primary">
+            <input
+              type="checkbox"
+              checked={formData.isFlexibleDuration || false}
+              onChange={(e) => {
+                setStepData("isFlexibleDuration", e.target.checked);
+                if (e.target.checked) setStepData("duration", "Not Decided");
+                else setStepData("duration", "");
+              }}
+              className="h-3.5 w-3.5 rounded accent-primary border-accent/30 cursor-pointer"
+            />
+            Not Yet Decided
+          </label>
+        </div>
+
+        {!formData.isFlexibleDuration ? (
+          <div className="space-y-3">
+            <div className={cn(
+              "grid gap-3",
+              isSideLayout ? "grid-cols-2" : "grid-cols-2 md:grid-cols-4"
+            )}>
+              {["1 Day", "2 Days", "3 Days", "4 Days"].map((d) => {
+                const isSelected = formData.duration === d;
+                return (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setStepData("duration", d)}
+                    className={cn(
+                      "p-3.5 rounded-xl border text-center transition-all cursor-pointer text-xs font-semibold",
+                      isSelected
+                        ? "border-accent bg-primary/5 shadow-sm text-primary"
+                        : "border-accent/15 bg-secondary/30 hover:bg-accent/5 text-primary/80"
+                    )}
+                  >
+                    {d}
+                  </button>
+                );
+              })}
+            </div>
+            {errors.duration && (
+              <span className="text-[10px] text-primary font-semibold flex items-center gap-1 mt-1">
+                <AlertCircle className="h-3.5 w-3.5" /> {errors.duration}
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="p-4 border border-dashed border-accent/30 rounded-2xl bg-secondary/30 text-center">
+            <span className="text-xs text-primary/80 font-medium">
+              Duration set to: <strong className="text-accent">Flexible / Not Yet Decided</strong>
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-8">
@@ -107,110 +178,81 @@ export function Step2Timeline({ formData, setStepData, errors }: Step2Props) {
               </span>
             )}
 
-            {/* Optional Day Picker */}
-            {formData.weddingMonth && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="space-y-3 pt-2"
-              >
-                <label className="block text-[10px] font-bold text-primary/60 tracking-wider uppercase">
-                  Select Day (Optional)
-                </label>
-                <div className="flex flex-wrap gap-2 justify-start max-h-[140px] overflow-y-auto p-2 bg-secondary/30 rounded-xl border border-accent/10">
-                  {daysArray.map((day) => {
-                    const isSelected = formData.weddingDay === day;
-                    return (
-                      <button
-                        key={day}
-                        type="button"
-                        onClick={() => {
-                          if (isSelected) {
-                            setStepData("weddingDay", "");
-                          } else {
-                            setStepData("weddingDay", day);
-                          }
-                        }}
-                        className={cn(
-                          "h-9 w-9 rounded-full flex items-center justify-center text-xs font-semibold border transition-all cursor-pointer",
-                          isSelected
-                            ? "bg-accent border-accent text-primary shadow-sm"
-                            : "bg-secondary-light border-accent/10 text-primary/80 hover:border-accent/40"
-                        )}
-                      >
-                        {day}
-                      </button>
-                    );
-                  })}
-                </div>
-              </motion.div>
+            {/* Optional Day Picker & Duration Layout */}
+            {formData.weddingMonth ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-accent/10">
+                {/* Optional Day Picker */}
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="space-y-3"
+                >
+                  <label className="block text-[10px] font-bold text-primary/60 tracking-wider uppercase">
+                    Select Day (Optional)
+                  </label>
+                  <div className="p-4 bg-secondary/30 rounded-xl border border-accent/10 w-full max-w-[320px]">
+                    <div className="grid grid-cols-7 gap-1 text-center mb-2">
+                      {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((dayName) => (
+                        <div key={dayName} className="text-[10px] font-bold text-primary/40 uppercase py-1">
+                          {dayName}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-7 gap-1.5">
+                      {Array.from({ length: firstDayIndex }).map((_, i) => (
+                        <div key={`empty-${i}`} />
+                      ))}
+                      {daysArray.map((day) => {
+                        const isSelected = formData.weddingDay === day;
+                        return (
+                          <button
+                            key={day}
+                            type="button"
+                            onClick={() => {
+                              if (isSelected) {
+                                setStepData("weddingDay", "");
+                              } else {
+                                setStepData("weddingDay", day);
+                              }
+                            }}
+                            className={cn(
+                              "w-full aspect-square rounded-full flex items-center justify-center text-xs font-semibold border transition-all cursor-pointer",
+                              isSelected
+                                ? "bg-accent border-accent text-primary shadow-sm"
+                                : "bg-secondary-light border-accent/10 text-primary/80 hover:border-accent/40"
+                            )}
+                          >
+                            {day}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Duration Section alongside Calendar */}
+                {renderDurationSection(true)}
+              </div>
+            ) : (
+              /* Duration Section full width when no month is selected */
+              <div className="pt-4 border-t border-accent/10">
+                {renderDurationSection(false)}
+              </div>
             )}
           </div>
         ) : (
-          <div className="p-8 border border-dashed border-accent/30 rounded-2xl bg-secondary/30 text-center space-y-2">
-            <Calendar className="h-6 w-6 text-accent mx-auto animate-pulse" />
-            <h4 className="font-serif text-sm font-bold text-primary">Flexible Timeline Active</h4>
-            <p className="text-[10px] text-primary/60 max-w-xs mx-auto">
-              We will optimize venue listings and vendor quotes for available auspicious dates in the upcoming months.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Section 2: Wedding Duration */}
-      <div className="space-y-4 pt-4 border-t border-accent/10">
-        <div className="flex items-center justify-between border-b border-accent/10 pb-2">
-          <label className="block text-[10px] font-bold text-primary tracking-wider uppercase">
-            2. Wedding Duration <span className="text-primary">*</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-primary">
-            <input
-              type="checkbox"
-              checked={formData.isFlexibleDuration || false}
-              onChange={(e) => {
-                setStepData("isFlexibleDuration", e.target.checked);
-                if (e.target.checked) setStepData("duration", "Not Decided");
-                else setStepData("duration", "");
-              }}
-              className="h-3.5 w-3.5 rounded accent-primary border-accent/30 cursor-pointer"
-            />
-            Not Yet Decided
-          </label>
-        </div>
-
-        {!formData.isFlexibleDuration ? (
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {["1 Day", "2 Days", "3 Days", "4 Days"].map((d) => {
-                const isSelected = formData.duration === d;
-                return (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => setStepData("duration", d)}
-                    className={cn(
-                      "p-3.5 rounded-xl border text-center transition-all cursor-pointer text-xs font-semibold",
-                      isSelected
-                        ? "border-accent bg-primary/5 shadow-sm text-primary"
-                        : "border-accent/15 bg-secondary/30 hover:bg-accent/5 text-primary/80"
-                    )}
-                  >
-                    {d}
-                  </button>
-                );
-              })}
+          /* Flexible on Dates layout */
+          <div className="space-y-6">
+            <div className="p-8 border border-dashed border-accent/30 rounded-2xl bg-secondary/30 text-center space-y-2">
+              <Calendar className="h-6 w-6 text-accent mx-auto animate-pulse" />
+              <h4 className="font-serif text-sm font-bold text-primary">Flexible Timeline Active</h4>
+              <p className="text-[10px] text-primary/60 max-w-xs mx-auto">
+                We will optimize venue listings and vendor quotes for available auspicious dates in the upcoming months.
+              </p>
             </div>
-            {errors.duration && (
-              <span className="text-[10px] text-primary font-semibold flex items-center gap-1 mt-1">
-                <AlertCircle className="h-3.5 w-3.5" /> {errors.duration}
-              </span>
-            )}
-          </div>
-        ) : (
-          <div className="p-4 border border-dashed border-accent/30 rounded-2xl bg-secondary/30 text-center">
-            <span className="text-xs text-primary/80 font-medium">
-              Duration set to: <strong className="text-accent">Flexible / Not Yet Decided</strong>
-            </span>
+            <div className="pt-4 border-t border-accent/10">
+              {renderDurationSection(false)}
+            </div>
           </div>
         )}
       </div>
