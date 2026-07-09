@@ -97,9 +97,35 @@ export function Step8Budget({ formData, setStepData, errors }: Step8Props) {
             step="1"
             value={currentIndex}
             onChange={handleSliderChange}
-            className="w-full h-1.5 rounded-lg bg-accent/20 accent-primary appearance-none cursor-pointer focus:outline-none"
+            className={cn(
+              "w-full h-1.5 rounded-lg appearance-none cursor-pointer focus:outline-none transition-all",
+              // Webkit Thumb
+              "[&::-webkit-slider-thumb]:appearance-none",
+              "[&::-webkit-slider-thumb]:w-4.5",
+              "[&::-webkit-slider-thumb]:h-4.5",
+              "[&::-webkit-slider-thumb]:rounded-full",
+              "[&::-webkit-slider-thumb]:bg-primary",
+              "[&::-webkit-slider-thumb]:border-2",
+              "[&::-webkit-slider-thumb]:border-accent",
+              "[&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(200,164,93,0.5)]",
+              "[&::-webkit-slider-thumb]:transition-all",
+              "[&::-webkit-slider-thumb]:hover:scale-110",
+              "[&::-webkit-slider-thumb]:active:scale-90",
+              // Moz Thumb
+              "[&::-moz-range-thumb]:w-4.5",
+              "[&::-moz-range-thumb]:h-4.5",
+              "[&::-moz-range-thumb]:rounded-full",
+              "[&::-moz-range-thumb]:bg-primary",
+              "[&::-moz-range-thumb]:border-2",
+              "[&::-moz-range-thumb]:border-accent",
+              "[&::-moz-range-thumb]:shadow-[0_0_10px_rgba(200,164,93,0.5)]",
+              "[&::-moz-range-thumb]:border-none",
+              "[&::-moz-range-thumb]:transition-all",
+              "[&::-moz-range-thumb]:hover:scale-110",
+              "[&::-moz-range-thumb]:active:scale-90"
+            )}
             style={{
-              background: `linear-gradient(to right, var(--primary) ${currentIndex * 12.5}%, var(--accent-light) ${currentIndex * 12.5}%)`
+              background: `linear-gradient(to right, var(--color-primary) ${currentIndex * 12.5}%, rgba(200, 164, 93, 0.2) ${currentIndex * 12.5}%)`
             }}
           />
 

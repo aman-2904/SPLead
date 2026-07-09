@@ -362,6 +362,7 @@ export default function AdminDashboard() {
                       <th className="p-4 font-bold uppercase">Destination City</th>
                       <th className="p-4 font-bold uppercase">Timeline</th>
                       <th className="p-4 font-bold uppercase">Budget Tier</th>
+                      <th className="p-4 font-bold uppercase text-center">Consultation Slot</th>
                       <th className="p-4 font-bold uppercase text-center">Inspect</th>
                       <th className="p-4 font-bold uppercase text-right">Delete</th>
                     </tr>
@@ -369,47 +370,68 @@ export default function AdminDashboard() {
                   <tbody>
                     {requests.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-primary/60 font-semibold italic">
+                        <td colSpan={8} className="p-8 text-center text-primary/60 font-semibold italic">
                           No wizard submissions found in the database.
                         </td>
                       </tr>
                     ) : (
-                      requests.map((r) => (
-                        <tr key={r.id} className="border-b border-accent/10 dark:border-neutral-850">
-                          <td className="p-4 text-left">
-                            <div className="font-serif font-bold text-sm text-primary dark:text-neutral-200 flex items-center gap-2">
-                              <span>{r.name}</span>
-                              {!r.budget && (
-                                <span className="bg-primary/10 text-primary dark:text-primary-light text-[8px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
-                                  Incomplete
+                      requests.map((r) => {
+                        const consDate = r.services?.find((s: string) => s.startsWith("consultation_date:"))?.split(":")[1];
+                        const consTime = r.services?.find((s: string) => s.startsWith("consultation_time:"))?.split(":")[1];
+
+                        return (
+                          <tr key={r.id} className="border-b border-accent/10 dark:border-neutral-850">
+                            <td className="p-4 text-left">
+                              <div className="font-serif font-bold text-sm text-primary dark:text-neutral-200 flex items-center gap-2">
+                                <span>{r.name}</span>
+                                {!r.budget && (
+                                  <span className="bg-primary/10 text-primary dark:text-primary-light text-[8px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
+                                    Incomplete
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-[9px] text-accent font-medium mt-0.5">{r.phone}</div>
+                            </td>
+                            <td className="p-4 font-medium">
+                              {r.city === "other" ? r.custom_city : r.city}
+                            </td>
+                            <td className="p-4">
+                              {r.is_flexible_date ? "Flexible" : (r.wedding_month ? `${r.wedding_month}${r.wedding_day ? ` Day ${r.wedding_day}` : ""}` : "Not Selected Yet")}
+                            </td>
+                            <td className="p-4 font-serif font-bold text-accent">{r.budget || "Incomplete"}</td>
+                            <td className="p-4 text-center">
+                              {consDate ? (
+                                <div className="space-y-0.5">
+                                  <span className="bg-accent/10 border border-accent/25 text-accent-dark dark:text-accent text-[9px] font-bold px-2 py-0.5 rounded-full inline-block">
+                                    {consDate}
+                                  </span>
+                                  <span className="text-[8px] text-primary/60 dark:text-neutral-400 block font-medium">
+                                    {consTime}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="text-[10px] text-primary/30 dark:text-neutral-500 font-medium italic">
+                                  Not Booked
                                 </span>
                               )}
-                            </div>
-                            <div className="text-[9px] text-accent font-medium mt-0.5">{r.phone}</div>
-                          </td>
-                          <td className="p-4 font-medium">
-                            {r.city === "other" ? r.custom_city : r.city}
-                          </td>
-                          <td className="p-4">
-                            {r.is_flexible_date ? "Flexible" : (r.wedding_month ? `${r.wedding_month}${r.wedding_day ? ` Day ${r.wedding_day}` : ""}` : "Not Selected Yet")}
-                          </td>
-                          <td className="p-4 font-serif font-bold text-accent">{r.budget || "Incomplete"}</td>
-                          <td className="p-4 text-center">
-                            <button
-                              onClick={() => setSelectedRequest(r)}
-                              className="px-3 py-1.5 bg-primary text-secondary text-[10px] font-bold rounded-lg hover:bg-primary-dark cursor-pointer flex items-center gap-1 mx-auto transition-colors"
-                            >
-                              <Eye className="h-3 w-3" />
-                              View Inputs
-                            </button>
-                          </td>
-                          <td className="p-4 text-right">
-                            <button onClick={() => deleteRequest(r.id)} className="text-primary hover:text-accent p-1 cursor-pointer">
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))
+                            </td>
+                            <td className="p-4 text-center">
+                              <button
+                                onClick={() => setSelectedRequest(r)}
+                                className="px-3 py-1.5 bg-primary text-secondary text-[10px] font-bold rounded-lg hover:bg-primary-dark cursor-pointer flex items-center gap-1 mx-auto transition-colors"
+                              >
+                                <Eye className="h-3 w-3" />
+                                View Inputs
+                              </button>
+                            </td>
+                            <td className="p-4 text-right">
+                              <button onClick={() => deleteRequest(r.id)} className="text-primary hover:text-accent p-1 cursor-pointer">
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
@@ -563,6 +585,27 @@ export default function AdminDashboard() {
                   <span>{selectedRequest.city === "other" ? selectedRequest.custom_city : selectedRequest.city}</span>
                 </div>
               </div>
+
+              {/* Consultation Booking Slot Banner */}
+              {(() => {
+                const consDate = selectedRequest.services?.find((s: string) => s.startsWith("consultation_date:"))?.split(":")[1];
+                const consTime = selectedRequest.services?.find((s: string) => s.startsWith("consultation_time:"))?.split(":")[1];
+                if (!consDate) return null;
+                return (
+                  <div className="p-4 bg-accent/10 border border-accent/20 rounded-xl flex items-center justify-between text-xs font-semibold text-primary dark:text-neutral-200">
+                    <div className="flex items-center gap-2.5">
+                      <Clock className="h-4 w-4 text-accent shrink-0" />
+                      <div>
+                        <span className="text-[8px] font-bold text-accent uppercase tracking-widest block">Booked Consultation Slot</span>
+                        <span className="font-serif text-sm font-bold text-primary dark:text-neutral-100">{consDate} at {consTime}</span>
+                      </div>
+                    </div>
+                    <span className="bg-primary/10 text-primary dark:text-primary-light text-[9px] font-bold px-2.5 py-0.5 rounded-full shrink-0">
+                      Assigned to Shivani
+                    </span>
+                  </div>
+                );
+              })()}
 
               {/* Inner Config Panels */}
               <div className="space-y-4">
