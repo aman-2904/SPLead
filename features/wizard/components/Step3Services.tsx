@@ -15,7 +15,6 @@ const SERVICES = [
   { id: "makeup", label: "Makeup", desc: "Bridal makeovers & styling", icon: Paintbrush },
   { id: "mehendi", label: "Mehendi", desc: "Custom bridal henna & artists", icon: Sparkles },
   { id: "dj", label: "DJ", desc: "Celebrity DJs & sound setup", icon: Disc },
-  { id: "catering", label: "Catering", desc: "Multi-cuisine gourmet dining", icon: Utensils },
   { id: "rooms", label: "Rooms", desc: "Accommodations & guest buyouts", icon: BedDouble },
   { id: "invitation", label: "Invitation Cards", desc: "Designer wedding cards & boxes", icon: MailOpen },
   { id: "website", label: "Wedding Website", desc: "Custom digital RSVP portal", icon: Globe },

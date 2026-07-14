@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart, ChevronLeft, ChevronRight, Check, AlertCircle, ShieldCheck, HelpCircle, Calendar, Clock
@@ -264,132 +265,13 @@ function WizardForm() {
               Select a date and a 30-minute time slot for your complimentary introductory consultation call.
             </p>
 
-            <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-start bg-secondary/40 border border-accent/10 rounded-2xl p-6 shadow-sm">
-              {/* Left Column: Calendar */}
-              <div className="w-full">
-                <span className="text-[9px] font-bold text-accent uppercase tracking-widest block mb-4">
-                  1. Select Date
-                </span>
-                <div className="p-4 bg-secondary-light rounded-xl border border-accent/10">
-                  <div className="flex justify-between items-center mb-4">
-                    <button
-                      type="button"
-                      onClick={handlePrevMonth}
-                      disabled={year <= today.getFullYear() && month <= today.getMonth()}
-                      className="p-1 hover:bg-accent/15 rounded disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </button>
-                    <h4 className="font-serif font-bold text-sm text-primary">
-                      {monthNames[month]} {year}
-                    </h4>
-                    <button
-                      type="button"
-                      onClick={handleNextMonth}
-                      className="p-1 hover:bg-accent/15 rounded cursor-pointer"
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                  
-                  <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-primary/45 uppercase mb-2">
-                    {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(d => (
-                      <div key={d} className="py-1">{d}</div>
-                    ))}
-                  </div>
-
-                  <div className="grid grid-cols-7 gap-1">
-                    {Array.from({ length: firstDayIndex }).map((_, idx) => (
-                      <div key={`empty-${idx}`} />
-                    ))}
-                    {Array.from({ length: totalDays }, (_, idx) => {
-                      const day = idx + 1;
-                      const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-                      const isPast = dateStr < todayStr;
-                      const isSelected = bookingDate === dateStr;
-                      
-                      return (
-                        <button
-                          key={day}
-                          type="button"
-                          disabled={isPast}
-                          onClick={() => {
-                            setBookingDate(dateStr);
-                            setBookingTime(""); // Reset time on date change
-                          }}
-                          className={cn(
-                            "aspect-square rounded-full flex items-center justify-center text-xs font-semibold border transition-all cursor-pointer",
-                            isPast && "text-primary/20 border-transparent cursor-not-allowed opacity-30",
-                            !isPast && !isSelected && "bg-secondary-light border-accent/10 text-primary/80 hover:border-accent/40",
-                            isSelected && "bg-accent border-accent text-primary shadow-sm"
-                          )}
-                        >
-                          {day}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Time Slot Selector */}
-              <div className="w-full flex flex-col h-full justify-between">
-                <div>
-                  <span className="text-[9px] font-bold text-accent uppercase tracking-widest block mb-4">
-                    2. Select Time Slot
-                  </span>
-                  
-                  {bookingDate ? (
-                    <div className="space-y-2">
-                      <p className="text-xs font-semibold text-primary/80 mb-3">
-                        Available times for {new Date(bookingDate).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}:
-                      </p>
-                      <div className="grid grid-cols-2 gap-2 max-h-[190px] overflow-y-auto pr-1">
-                        {TIME_SLOTS.map((slot) => {
-                          const isSelected = bookingTime === slot;
-                          return (
-                            <button
-                              key={slot}
-                              type="button"
-                              onClick={() => setBookingTime(slot)}
-                              className={cn(
-                                "py-2 px-3 border rounded-xl text-center text-xs font-semibold transition-all cursor-pointer",
-                                isSelected
-                                  ? "bg-primary border-primary text-secondary"
-                                  : "border-accent/15 bg-secondary-light text-primary/80 hover:bg-accent/5 hover:border-accent/35"
-                              )}
-                            >
-                              {slot.split(" - ")[0]}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-[210px] flex flex-col items-center justify-center border border-dashed border-accent/20 rounded-xl bg-secondary-light/50 text-center p-4">
-                      <Calendar className="h-6 w-6 text-accent/40 mb-2 animate-bounce" />
-                      <p className="text-xs font-semibold text-primary/50">
-                        Please select a date on the calendar first
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Book Consultation Button */}
-                {bookingDate && bookingTime && (
-                  <div className="pt-4 mt-4 border-t border-accent/10">
-                    <button
-                      type="button"
-                      onClick={handleBookSlot}
-                      disabled={isBookingSaving}
-                      className="w-full py-2.5 bg-accent hover:bg-accent-dark text-primary font-bold text-xs rounded-full flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.01] cursor-pointer uppercase tracking-wider"
-                    >
-                      {isBookingSaving ? "Reserving Slot..." : "Confirm Booking"}
-                      <Check className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                )}
-              </div>
+            <div className="max-w-3xl mx-auto w-full bg-secondary-light/40 border border-accent/10 rounded-2xl p-2 shadow-sm">
+              <div 
+                className="calendly-inline-widget w-full" 
+                data-url="https://calendly.com/shaadi-platfrom/30min?text_color=000000&primary_color=601221" 
+                style={{ minWidth: '320px', height: '700px' }}
+              />
+              <Script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" strategy="lazyOnload" />
             </div>
           </div>
         )}
