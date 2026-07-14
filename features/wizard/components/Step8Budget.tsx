@@ -7,9 +7,6 @@ import { AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const BUDGET_STEPS = [
-  { value: 500000, label: "5 Lakh", words: "Five Lakh Rupees", formatted: "₹5,00,000" },
-  { value: 1000000, label: "10 Lakh", words: "Ten Lakh Rupees", formatted: "₹10,00,000" },
-  { value: 2000000, label: "20 Lakh", words: "Twenty Lakh Rupees", formatted: "₹20,00,000" },
   { value: 3000000, label: "30 Lakh", words: "Thirty Lakh Rupees", formatted: "₹30,00,000" },
   { value: 5000000, label: "50 Lakh", words: "Fifty Lakh Rupees", formatted: "₹50,00,000" },
   { value: 7500000, label: "75 Lakh", words: "Seventy-Five Lakh Rupees", formatted: "₹75,00,000" },
@@ -26,13 +23,13 @@ export interface Step8Props {
 
 export function Step8Budget({ formData, setStepData, errors }: Step8Props) {
   const selectedIndex = BUDGET_STEPS.findIndex(b => b.label === formData.budget);
-  const currentIndex = selectedIndex === -1 ? 4 : selectedIndex;
+  const currentIndex = selectedIndex === -1 ? 1 : selectedIndex;
   const currentStepItem = BUDGET_STEPS[currentIndex];
 
   // Automatically set the budget in context if it is empty
   React.useEffect(() => {
     if (!formData.budget) {
-      setStepData("budget", BUDGET_STEPS[4].label);
+      setStepData("budget", BUDGET_STEPS[1].label);
     }
   }, [formData.budget, setStepData]);
 
@@ -93,7 +90,7 @@ export function Step8Budget({ formData, setStepData, errors }: Step8Props) {
           <input
             type="range"
             min="0"
-            max="8"
+            max={BUDGET_STEPS.length - 1}
             step="1"
             value={currentIndex}
             onChange={handleSliderChange}
@@ -125,7 +122,7 @@ export function Step8Budget({ formData, setStepData, errors }: Step8Props) {
               "[&::-moz-range-thumb]:active:scale-90"
             )}
             style={{
-              background: `linear-gradient(to right, var(--color-primary) ${currentIndex * 12.5}%, rgba(200, 164, 93, 0.2) ${currentIndex * 12.5}%)`
+              background: `linear-gradient(to right, var(--color-primary) ${currentIndex * (100 / (BUDGET_STEPS.length - 1))}%, rgba(200, 164, 93, 0.2) ${currentIndex * (100 / (BUDGET_STEPS.length - 1))}%)`
             }}
           />
 
@@ -160,7 +157,7 @@ export function Step8Budget({ formData, setStepData, errors }: Step8Props) {
           {/* Responsive Mobile Labels */}
           {currentStepItem && (
             <div className="flex justify-between w-full px-1 mt-4 sm:hidden">
-              <span className="text-[9px] font-semibold text-primary/60">₹5 Lakh</span>
+              <span className="text-[9px] font-semibold text-primary/60">₹30 Lakh</span>
               <span className="text-[9px] font-bold text-accent">{currentStepItem.label}</span>
               <span className="text-[9px] font-semibold text-primary/60">₹3 Crore+</span>
             </div>
