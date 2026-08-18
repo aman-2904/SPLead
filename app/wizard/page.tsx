@@ -55,12 +55,14 @@ function WizardForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    if (currentStep >= 2) {
+    if (isSubmitted) {
+      window.history.pushState(null, "", "/wizard/leadsubmit");
+    } else if (currentStep >= 2) {
       window.history.pushState(null, "", "/wizard/submit");
     } else {
       window.history.pushState(null, "", "/wizard");
     }
-  }, [currentStep]);
+  }, [currentStep, isSubmitted]);
 
   const handleNext = async () => {
     setStepError(null);
