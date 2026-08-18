@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { motion, AnimatePresence } from "framer-motion";
@@ -53,6 +53,14 @@ function WizardForm() {
   const [stepError, setStepError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (currentStep >= 2) {
+      window.history.pushState(null, "", "/wizard/submit");
+    } else {
+      window.history.pushState(null, "", "/wizard");
+    }
+  }, [currentStep]);
 
   const handleNext = async () => {
     setStepError(null);
